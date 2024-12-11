@@ -1,0 +1,76 @@
+import json
+import os
+
+# Define a simple RecipeManager class
+class RecipeManager:
+    def __init__(self, filename="recipes.json"):
+        self.filename = filename
+        self.recipes = self.load_recipes()
+
+    def load_recipes(self):
+        """Load recipes from file if it exists."""
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r') as file:
+                return json.load(file)
+        return []
+
+    def save_recipes(self):
+        """Save recipes to file."""
+        with open(self.filename, 'w') as file:
+            json.dump(self.recipes, file)
+
+    def add_recipe(self):
+        """Add a new recipe."""
+        name = input("Enter recipe name: ")
+        ingredients = input("Enter ingredients (comma separated): ").split(',')
+        instructions = input("Enter instructions: ")
+        
+        # Create a new recipe and add it to the list
+        recipe = {"name": name, "ingredients": ingredients, "instructions": instructions}
+        self.recipes.append(recipe)
+        self.save_recipes()
+        print(f"Recipe '{name}' added!")
+
+    def delete_recipe(self):
+        """Delete a recipe by name."""
+        name = input("Enter recipe name to delete: ")
+        self.recipes = [recipe for recipe in self.recipes if recipe["name"] != name]
+        self.save_recipes()
+        print(f"Recipe '{name}' deleted!")
+
+    def view_recipes(self):
+        """View all recipes."""
+        if not self.recipes:
+            print("No recipes available.")
+        else:
+            for recipe in self.recipes:
+                print(f"\nName: {recipe['name']}")
+                print(f"Ingredients: {', '.join(recipe['ingredients'])}")
+                print(f"Instructions: {recipe['instructions']}")
+
+def main():
+    manager = RecipeManager()
+
+    while True:
+        print("\nSimple Recipe Manager")
+        print("1. Add Recipe")
+        print("2. Delete Recipe")
+        print("3. View Recipes")
+        print("4. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == '1':
+            manager.add_recipe()
+        elif choice == '2':
+            manager.delete_recipe()
+        elif choice == '3':
+            manager.view_recipes()
+        elif choice == '4':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid option, try again.")
+
+if __name__ == "__main__":
+    main()
